@@ -1,10 +1,8 @@
 #importing dependencies
 #using flask to render a template, redirecting to amother url, and creating a URL
 from flask import Flask, render_template, redirect, url_for
-
 #using PyMongo to interact with our Mongo database
-from flask_pymongo import PyMongo 
-
+from flask_pymongo import PyMongo
 #usign the scraping code from Jupyter notebook to python
 import scraping
 
