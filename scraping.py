@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as soup
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import datetime as dt
+import time
 
 
 def scrape_all():
@@ -95,6 +96,44 @@ def mars_facts():
 
     ## Convert dataframe into HTML format, add bootstrap
     return df.to_html()
+
+def hemispheres(browser):
+    # visit URL
+    url5 = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url5)
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    for i in range(4):
+        #hemispheres = {}
+        browser.find_by_css('a.product-item h3')[i].click()
+        #find_pic = browser.find_link_by_text('Sample').first
+       # img_url = find_pic['href']
+        #header = browser.find_by_css("h2.title").text
+        #hemispheres["img_url"] = img_url
+        #hemispheres["title"] = header
+        hemisphere_data = scrape_hemisphere(browser.html)
+        hemisphere_image_urls.append(hemisphere_data)
+        browser.back()
+    return hemisphere_image_urls
+
+def scrape_hemisphere(html_text):
+    #parse the text
+    hemisphere_soup = soup(html_text, "html.parser")
+    # add try and except for error handling
+    try:
+        hem_title = hemisphere_soup.find("h2", class_="title").get_text()
+        hem_sample = hemisphere_soup.find("a", text="Sample").get("href")
+    except AttributeError:
+        hem_title = None
+        hem_sample = None
+
+    hemispheres = {"title": hem_title, "img_url": hem_sample}
+
+    return hemispheres
+
+
 
 if __name__ == "__main__":
     # If running as script, print scraped data
